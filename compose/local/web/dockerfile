@@ -1,10 +1,5 @@
 FROM python:3.10.14-bookworm
 
-# Install MySQL client
-RUN apt-get update && \
-    apt-get install -y mysql-client
-
-
 WORKDIR /crocosoft-task
 
 COPY requirements.txt requirements.txt
