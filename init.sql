@@ -1,5 +1,9 @@
 CREATE DATABASE IF NOT EXISTS crocosoft_social;
 
+-- Create a user with necessary permissions
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+GRANT ALL PRIVILEGES ON crocosoft_social.* TO '${MYSQL_USER}'@'%';
+
 USE crocosoft_social;
 
 
@@ -10,6 +14,7 @@ CREATE TABLE users (
     email VARCHAR(250),
     birthdate DATE,
     password VARCHAR(250),
+    joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -17,9 +22,11 @@ CREATE TABLE posts (
     id INT NOT NULL AUTO_INCREMENT,
     author_id INT NOT NULL,
     content VARCHAR(5000),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     CONSTRAINT fk_post_author_id FOREIGN KEY (author_id)
         REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE comments (
@@ -27,38 +34,49 @@ CREATE TABLE comments (
     author_id INT NOT NULL,
     post_id INT NOT NULL,
     content VARCHAR(5000),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     CONSTRAINT fk_comment_author_id FOREIGN KEY (author_id)
-        REFERENCES users(id),
+        REFERENCES users(id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_commented_post_id FOREIGN KEY (post_id)
         REFERENCES posts(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE likes (
     reactor_id INT NOT NULL,
     post_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_reactor_id FOREIGN KEY (reactor_id)
-        REFERENCES users(id),
+        REFERENCES users(id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_liked_post_id FOREIGN KEY (post_id)
         REFERENCES posts(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE shares (
     sharer_id INT NOT NULL,
     post_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_sharer_id FOREIGN KEY (sharer_id)
-        REFERENCES users(id),
+        REFERENCES users(id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_shared_post_id FOREIGN KEY (post_id)
         REFERENCES posts(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE friendships (
     person_1 INT NOT NULL,
     person_2 INT NOT NULL,
     CONSTRAINT fk_person_1_id FOREIGN KEY (person_1)
-        REFERENCES users(id),
+        REFERENCES users(id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_person_2_id FOREIGN KEY (person_2)
         REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 
