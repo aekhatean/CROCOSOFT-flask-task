@@ -43,6 +43,9 @@ Once shell commands are loaded, you can now use them to set and run the project 
 4.  `ct-run`: to run flask server
 5.  `ct-down`: Once you are done with the container you can use this command to take it down (recommended to save your computer resources).
 
+NOTE: If you run ct-run, it will automatically build and start up the container.
+NOTE: After runing the container for the first time, give it a fex seconds before making requests just to make sure all services are up.
+
 ## DB ERD
 
 ![alt text](<db-erd.png>)
