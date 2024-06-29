@@ -16,6 +16,7 @@ def execute_query(query, params=None, commit=False):
             cursor.execute(query, params)
             if commit:
                 conn.commit()
+                return cursor.lastrowid
             return cursor.fetchone()
 
 
@@ -34,10 +35,10 @@ def create_post():
         return "please provide author_id and content fields", 400
 
     insert_query = "INSERT INTO posts (author_id, content) VALUES (%s, %s)"
-    execute_query(insert_query, (author_id, content), commit=True)
+    post_id = execute_query(insert_query, (author_id, content), commit=True)
 
     # Fetch the inserted post
-    post_id = execute_query("SELECT * FROM posts WHERE id = LAST_INSERT_ID()")
+    post_id = execute_query("SELECT * FROM posts WHERE id = %s", (post_id,))
     return jsonify(post_id), 201
 
 
